@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 type Resource struct {
@@ -45,9 +44,7 @@ func getResource(resourceName string, params map[string]string) (*Resource, erro
 }
 
 func NewHTTPClient() *http.Client {
-	return &http.Client{
-		Timeout: time.Second * 10,
-	}
+	return &http.Client{}
 }
 
 func NewRequest(method, resourceName string, params map[string]string) (*http.Request, error) {
@@ -60,11 +57,9 @@ func NewRequest(method, resourceName string, params map[string]string) (*http.Re
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0")
 	req.Header.Add("Connection", "keep-alive")
 	req.Header.Add("Referer", "https://stats.nba.com/")
-	req.Header.Add("Cache-Control", "no-cache")
 	req.Header.Add("Accept-Language", "en-US,en;q=0.5")
 
 	q := req.URL.Query()
-
 	for key := range params {
 		q.Add(key, params[key])
 	}
