@@ -1,12 +1,7 @@
 package main
 
-import (
-	"fmt"
-	"nbastats/internal/pkg/datamodel"
-)
+import "nbastats/internal/pkg/api"
 
 func main() {
-	team, _ := datamodel.GetTeam(1610612737)
-
-	fmt.Print(*team)
+	api.StartServer()
 }

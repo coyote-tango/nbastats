@@ -1,0 +1,104 @@
+swagger: "2.0"
+info:
+  title: "NBA Stats API"
+  description: "An API for retrieving NBA player, team, and match information."
+  version: "1.0.0"
+host: "api.example.com"
+basePath: "/v1"
+schemes:
+  - "https"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /players:
+    get:
+      summary: "List all players"
+      description: "Retrieves a list of all NBA players."
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Player"
+
+  /players/{id}:
+    get:
+      summary: "Retrieve a specific player"
+      description: "Retrieves information for a specific NBA player by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "The ID of the player to retrieve."
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Player"
+        404:
+          description: "Player not found"
+
+  /teams:
+    get:
+      summary: "List all teams"
+      description: "Retrieves a list of all NBA teams."
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Team"
+
+  /teams/{id}:
+    get:
+      summary: "Retrieve a specific team"
+      description: "Retrieves information for a specific NBA team by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "The ID of the team to retrieve."
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Team"
+        404:
+          description: "Team not found"
+
+definitions:
+  Player:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      position:
+        type: "string"
+      team_id:
+        type: "integer"
+        format: "int64"
+  Team:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      city:
+        type: "string"
+      conference:
+        type: "string"
+      division:
+        type: "string"

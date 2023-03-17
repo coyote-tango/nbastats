@@ -49,7 +49,7 @@ func GetTeam(id int) (*Team, error) {
 	return nil, nil
 }
 
-func GetAllTeams() *[]Team {
+func GetTeams() (*[]Team, error) {
 	var teamsList []Team
 	teamsCh := make(chan Team)
 
@@ -65,5 +65,5 @@ func GetAllTeams() *[]Team {
 		teamsList = append(teamsList, <-teamsCh)
 	}
 
-	return &teamsList
+	return &teamsList, nil
 }
