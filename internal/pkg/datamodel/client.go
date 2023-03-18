@@ -8,9 +8,8 @@ import (
 )
 
 type Resource struct {
-	Resource   string         `json:"resource"`
-	Parameters map[string]int `json:"parameters"`
-	ResultSets []ResultSet    `json:"resultSets"`
+	Resource   string      `json:"resource"`
+	ResultSets []ResultSet `json:"resultSets"`
 }
 
 type ResultSet struct {

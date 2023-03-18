@@ -6,16 +6,16 @@ import (
 )
 
 type Team struct {
-	TeamId             int
-	Abbreviation       string
-	Nickname           string
-	YearFounded        int
-	City               string
-	Arena              string
-	Owner              string
-	GeneralManager     string
-	HeadCoach          string
-	DLeagueAffiliation string
+	TeamId             int    `json:"teamId,omitempty"`
+	Abbreviation       string `json:"abbreviation,omitempty"`
+	City               string `json:"city,omitempty"`
+	Nickname           string `json:"nickname,omitempty"`
+	YearFounded        int    `json:"yearFounded,omitempty"`
+	Arena              string `json:"arena,omitempty"`
+	Owner              string `json:"owner,omitempty"`
+	GeneralManager     string `json:"generalManager,omitempty"`
+	HeadCoach          string `json:"headCoach,omitempty"`
+	DLeagueAffiliation string `json:"dLeagueAffiliation,omitempty"`
 }
 
 func NewTeam(rowSet []interface{}) *Team {
@@ -32,11 +32,11 @@ func NewTeam(rowSet []interface{}) *Team {
 	}
 }
 
-// Get team by team Id
-
 func GetTeam(id int) (*Team, error) {
 	// https://stats.nba.com/stats/teamdetails
-	resource, err := getResource("teamdetails", map[string]string{"TeamId": strconv.Itoa(id)})
+	resource, err := getResource("teamdetails", map[string]string{
+		"TeamId": strconv.Itoa(id)},
+	)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching team details: %w", err)
 	}
@@ -51,18 +51,14 @@ func GetTeam(id int) (*Team, error) {
 
 func GetTeams() (*[]Team, error) {
 	var teamsList []Team
-	teamsCh := make(chan Team)
 
-	for _, value := range teams {
-		go func(id int) {
-			team, _ := GetTeam(id)
-			fmt.Println(*team)
-			teamsCh <- *team
-		}(value.Id)
-	}
-
-	for range teams {
-		teamsList = append(teamsList, <-teamsCh)
+	for abbreviation, teamInfo := range teams {
+		teamsList = append(teamsList, Team{
+			TeamId:       teamInfo.Id,
+			Nickname:     teamInfo.Name,
+			City:         teamInfo.City,
+			Abbreviation: abbreviation,
+		})
 	}
 
 	return &teamsList, nil

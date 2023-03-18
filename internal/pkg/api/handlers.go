@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"nbastats/internal/pkg/datamodel" // Replace with the actual import path for your datamodel package
+	"nbastats/internal/pkg/datamodel"
 	"net/http"
 	"strconv"
 )
@@ -31,7 +31,7 @@ func getTeamsHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, teams)
 }
 
-/*func getPlayersHandler(c *gin.Context) {
+func getPlayersHandler(c *gin.Context) {
 	players, err := datamodel.GetPlayers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -42,7 +42,7 @@ func getTeamsHandler(c *gin.Context) {
 }
 
 func getPlayerHandler(c *gin.Context) {
-	playerID := c.Param("player_id")
+	playerID, _ := strconv.Atoi(c.Param("player_id"))
 	player, err := datamodel.GetPlayer(playerID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -50,4 +50,4 @@ func getPlayerHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, player)
-}*/
+}
