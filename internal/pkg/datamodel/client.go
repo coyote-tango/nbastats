@@ -18,7 +18,8 @@ type ResultSet struct {
 	RowSet  [][]interface{} `json:"rowSet"`
 }
 
-func getResource(resourceName string, params map[string]string) (*Resource, error) {
+func reqResource(resourceName string, params map[string]string) (*Resource, error) {
+	//TODO remove resource struct and return a jsondata interface instead
 	req, err := NewRequest("GET", resourceName, params)
 	client := NewHTTPClient()
 
@@ -31,15 +32,49 @@ func getResource(resourceName string, params map[string]string) (*Resource, erro
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
-	var resource *Resource
 
 	body, err := ioutil.ReadAll(resp.Body)
+
+	var resource *Resource
 	err = json.Unmarshal(body, &resource)
 	if err != nil {
 		return nil, err
 	}
 
 	return resource, err
+}
+
+func reqGamesResource(params map[string]string) (interface{}, error) {
+	var resourceName = "scoreboardv3"
+	req, err := NewRequest("GET", resourceName, params)
+	client := NewHTTPClient()
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	var jsonData map[string]interface{}
+
+	err = json.Unmarshal(body, &jsonData)
+	if err != nil {
+		fmt.Println("Error unmarshalling JSON:", err)
+		return nil, err
+	}
+
+	var scoreboard map[string]interface{}
+
+	scoreboard = jsonData["scoreboard"].(map[string]interface{})
+	games := scoreboard["games"]
+
+	return games, err
 }
 
 func NewHTTPClient() *http.Client {

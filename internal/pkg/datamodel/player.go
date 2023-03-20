@@ -50,10 +50,26 @@ func NewPlayer(rowSet []interface{}) *Player {
 	}
 }
 
+func GetPlayer(id int) (*Player, error) {
+	//https://stats.nba.com/stats/commonplayerinfo?LeagueID=&PlayerID=2544
+	resource, err := reqResource("commonplayerinfo", map[string]string{"PlayerId": strconv.Itoa(id)})
+	if err != nil {
+		return nil, fmt.Errorf("error fetching player details: %w", err)
+	}
+
+	for _, resultSet := range resource.ResultSets {
+		if resultSet.Name == "CommonPlayerInfo" {
+			return NewPlayer(resultSet.RowSet[0]), nil
+		}
+	}
+	return nil, nil
+
+}
+
 func GetPlayers() (*[]Player, error) {
 	//https://stats.nba.com/stats/commonallplayers?IsOnlyCurrentSeason=1&LeagueID=00&Season=2022-23
 	var playersList []Player
-	resource, err := getResource("commonallplayers", map[string]string{"IsOnlyCurrentSeason": "1",
+	resource, err := reqResource("commonallplayers", map[string]string{"IsOnlyCurrentSeason": "1",
 		"LeagueID": NBA, "Season": CURRENT})
 	if err != nil {
 		return nil, fmt.Errorf("error fetching player details: %w", err)
@@ -72,22 +88,6 @@ func GetPlayers() (*[]Player, error) {
 		}
 	}
 	return &playersList, nil
-
-}
-
-func GetPlayer(id int) (*Player, error) {
-	//https://stats.nba.com/stats/commonplayerinfo?LeagueID=&PlayerID=2544
-	resource, err := getResource("commonplayerinfo", map[string]string{"PlayerId": strconv.Itoa(id)})
-	if err != nil {
-		return nil, fmt.Errorf("error fetching player details: %w", err)
-	}
-
-	for _, resultSet := range resource.ResultSets {
-		if resultSet.Name == "CommonPlayerInfo" {
-			return NewPlayer(resultSet.RowSet[0]), nil
-		}
-	}
-	return nil, nil
 
 }
 

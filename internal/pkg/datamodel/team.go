@@ -34,7 +34,7 @@ func NewTeam(rowSet []interface{}) *Team {
 
 func GetTeam(id int) (*Team, error) {
 	// https://stats.nba.com/stats/teamdetails
-	resource, err := getResource("teamdetails", map[string]string{
+	resource, err := reqResource("teamdetails", map[string]string{
 		"TeamId": strconv.Itoa(id)},
 	)
 	if err != nil {
