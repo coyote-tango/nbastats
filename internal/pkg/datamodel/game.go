@@ -2,6 +2,7 @@ package datamodel
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -9,7 +10,7 @@ import (
 // https://stats.nba.com/stats/boxscoresummaryv2?GameID=0022200819
 
 type Game struct {
-	GameId      string    `json:"gameId"`
+	GameId      int       `json:"gameId"`
 	GameTimeUTC time.Time `json:"gameTimeUTC"`
 	GameTimeCT  time.Time `json:"gameTimeCT"`
 	HomeTeam    Team      `json:"homeTeam"`
@@ -33,9 +34,10 @@ func GetGames(gameDate time.Time) (*[]Game, error) {
 		gameTimeUTC, _ := time.Parse("2006-01-02T15:04:05Z07:00", gameMap["gameTimeUTC"].(string))
 		location, _ := time.LoadLocation("America/Mexico_City")
 		gameTimeCT := gameTimeUTC.In(location)
+		gameId, _ := strconv.Atoi(gameMap["gameId"].(string))
 
 		gamesList = append(gamesList, Game{
-			GameId:      gameMap["gameId"].(string),
+			GameId:      gameId,
 			GameTimeUTC: gameTimeUTC,
 			GameTimeCT:  gameTimeCT,
 			HomeTeam: Team{
@@ -52,6 +54,5 @@ func GetGames(gameDate time.Time) (*[]Game, error) {
 			},
 		})
 	}
-	print(gamesResource)
 	return &gamesList, nil
 }

@@ -54,7 +54,17 @@ func teamsHandler(c *gin.Context) {
 }
 
 func gamesHandler(c *gin.Context) {
-	games, err := datamodel.GetGames(time.Now())
+	// Grab gameDate from query string, if not provided, use time.Now() as default
+	gameDate := c.DefaultQuery("gameDate", time.Now().Format("2006-01-02"))
+	parsedGameDate, err := time.Parse("2006-01-02", gameDate)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format, please use YYYY-MM-DD"})
+		return
+	}
+	//TODO if date < today show score of previous games
+	games, err := datamodel.GetGames(parsedGameDate)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
