@@ -24,5 +24,6 @@ variable "subnetc_cidr" {
 
 variable "common_tags" {
   description = "A map of common tags to apply to resources"
-  type = map(string)
+  type        = map(string)
+  default = {module = "network"}
 }
