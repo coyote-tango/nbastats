@@ -1,0 +1,29 @@
+name: Publish Docker image
+on:
+  push:
+    branches: [main]
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      env:
+        COMMIT_SHA: ${{ github.sha }}
+    
+    - name: Login to Harbor
+      uses: docker/login-action@v1
+      with:
+        registry: harbor.nbastats.io
+        username: ${{ secrets.HARBOR_USERNAME }}
+        password: ${{ secrets.HARBOR_PASSWORD }}
+    
+    - name: Build image
+      run: docker build -t nbastats .
+
+    - name: Tag image
+      run: docker tag nbastats harbor.nbastats.io/nbastats/nbastats:${COMMIT_SHA}
+    
+    - name: Push image to Harbor
+      run: docker push harbor.nbastats.io/nbastats/nbastats:${COMMIT_SHA}
+    
